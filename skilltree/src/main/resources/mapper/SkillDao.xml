@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mereking.meretool.dao.SkillDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="getById" resultType="Skill" parameterType="int">
+		select 
+			ks.skill_id as skillID, 
+			ks.skill_name as skillName, 
+			ks.skill_detail as skillDetail, 
+			ksr.layer as layer, 
+			ksr.left_skill_no as leftSkillNo, 
+			ksr.right_skill_no as rightSkillNo, 
+			ksr.skill_level as skillLevel 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		where ks.skill_id = #{skillID};
+	</select>
+	<select id="queryAllSkill" resultType="Skill">
+		select 
+			ks.skill_id as skillID, 
+			ks.skill_name as skillName, 
+			ks.skill_detail as skillDetail, 
+			ksr.layer as layer, 
+			ksr.left_skill_no as leftSkillNo, 
+			ksr.right_skill_no as rightSkillNo, 
+			ksr.skill_level as skillLevel 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		order by ksr.left_skill_no;
+	</select>
+	<!-- 插入一个技能，默认参数类型：Skill，指定keyProperty查询后自动将ID赋值到对象中 -->
+	<insert id="insertSkill" useGeneratedKeys="true" keyProperty="skillID">
+		<![CDATA[
+			insert into kt_skill (skill_name, skill_detail, skill_create)
+						value(#{skillName}, #{skillDetail}, #{skillCreate});
+		]]>
+	</insert>
+	<!-- 插入技能关联关系，默认参数类型：Skill -->
+	<insert id="insertSkillRelation" useGeneratedKeys="true" keyProperty="id">
+		<![CDATA[
+			insert into kt_skill_relation (left_skill_no, right_skill_no, layer, skill_id, skill_level)
+						value(#{leftSkillNo}, #{rightSkillNo}, #{layer}, #{skillID}, #{skillLevel});
+		]]>
+	</insert>
+	<!-- 插入时更新相关左右值 -->
+	<update id="updateSkillByInsert" parameterType="int">
+		<![CDATA[
+			update kt_skill_relation set left_skill_no = left_skill_no+2 where left_skill_no >= #{rightSkillNo};
+			update kt_skill_relation set right_skill_no = right_skill_no+2 where right_skill_no >= #{rightSkillNo}; 
+		]]>
+	</update>
+	<!-- 删除技能，同时删除技能关联关系  增加一个select避开错误：You can't specify target table 'XX' for update in FROM clause-->
+	<delete id="deleteSkillAndRelation" parameterType="int">
+		<![CDATA[
+			delete from kt_skill where skill_id in (select skill_id from (select skill_id from kt_skill_relation where right_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
+			delete from kt_skill_relation where skill_id in (select skill_id from (select skill_id from kt_skill_relation where right_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
+		]]>
+	</delete>
+	<!-- 删除时更新相关左右值 -->
+	<update id="updateSkillByDelete" parameterType="int">
+		<![CDATA[
+			update kt_skill_relation set right_skill_no = right_skill_no-(#{rightSkillNo}-#{leftSkillNo}+1) where right_skill_no >= #{rightSkillNo};
+			update kt_skill_relation set left_skill_no = left_skill_no-(#{rightSkillNo}-#{leftSkillNo}+1) where left_skill_no >= #{leftSkillNo};
+		]]>
+	</update>
+</mapper>
