@@ -23,7 +23,6 @@ public class SkillAction {
 		List<Skill> skills = skillService.queryALLSkill();
 		model.addAttribute("skills", skills);
 		return "skill/skill_list";
-		
 	}
 
 }
