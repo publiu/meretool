@@ -52,8 +52,8 @@
 	<!-- 删除技能，同时删除技能关联关系  增加一个select避开错误：You can't specify target table 'XX' for update in FROM clause-->
 	<delete id="deleteSkillAndRelation" parameterType="int">
 		<![CDATA[
-			delete from kt_skill where skill_id in (select skill_id from (select skill_id from kt_skill_relation where right_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
-			delete from kt_skill_relation where skill_id in (select skill_id from (select skill_id from kt_skill_relation where right_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
+			delete from kt_skill where skill_id in (select skill_id from (select skill_id from kt_skill_relation where left_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
+			delete from kt_skill_relation where skill_id in (select skill_id from (select skill_id from kt_skill_relation where left_skill_no >= #{leftSkillNo} and right_skill_no <= #{rightSkillNo}) as tmp);
 		]]>
 	</delete>
 	<!-- 删除时更新相关左右值 -->
