@@ -3,6 +3,20 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mereking.meretool.dao.SkillDao">
+	<!-- skill基本映射 -->
+	<resultMap type="Skill" id="skill">
+		<id property="skillID" column="skill_id" />
+		
+		<result property="skillName" column="skill_name"/>
+		<result property="skillDetail" column="skill_detail"/>
+		<result property="skillCreate" column="skill_create"/>
+		<result property="skillModified" column="skill_modified"/>
+		
+		<result property="layer" column="layer"/>
+		<result property="skillLevel" column="skill_level"/>
+		<result property="leftSkillNo" column="left_skill_no" />
+		<result property="rightSkillNo" column="right_skill_no"/>
+	</resultMap>
 	<!-- 目的：为dao接口方法提供sql语句配置 -->
 	<select id="getById" resultType="Skill" parameterType="int">
 		select 
@@ -27,6 +41,36 @@
 			ksr.skill_level as skillLevel 
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
 		order by ksr.left_skill_no;
+	</select>
+	<!-- querySkillLink查询所有关联关系结果映射 -->
+	<resultMap type="com.mereking.meretool.dto.QuerySkillLinkResultListDTO" id="querySkillLinkResultListDTO">
+		<collection property="querySkillLinkResultDTOs" ofType="com.mereking.meretool.dto.QuerySkillLinkResultDTO">
+			<association property="parentSkill" resultMap="skill" columnPrefix="parent_" />
+			<association property="childSkill" resultMap="skill" columnPrefix="child_" />
+		</collection>
+	</resultMap>
+	<select id="querySkillLink" resultMap="querySkillLinkResultListDTO">
+		<![CDATA[
+			select link.*, ks_parent.skill_name as parent_skill_name, ks_child.skill_name as child_skill_name from (
+				select 
+				ksr_parent.skill_id as parent_skill_id,
+				ksr_parent.layer as parent_layer,
+				ksr_parent.skill_level as parent_skill_level,
+				ksr_parent.left_skill_no as parent_left_skill_no,
+				ksr_parent.right_skill_no as parent_right_skill_no,
+				ksr_child.skill_id as child_skill_id,
+				ksr_child.layer as child_layer,
+				ksr_child.skill_level as child_skill_level,
+				ksr_child.left_skill_no as child_left_skill_no,
+				ksr_child.right_skill_no as child_right_skill_no
+				from kt_skill_relation ksr_parent 
+				LEFT JOIN 
+				kt_skill_relation ksr_child 
+				on 
+				((ksr_parent.left_skill_no < ksr_child.left_skill_no)and (ksr_parent.right_skill_no > ksr_child.right_skill_no) and ksr_parent.layer = ksr_child.layer-1)
+			)
+			link LEFT JOIN kt_skill ks_parent on ks_parent.skill_id=link.parent_skill_id LEFT JOIN kt_skill ks_child on ks_child.skill_id = link.child_skill_id where link.child_skill_id is not null;
+		]]>
 	</select>
 	<!-- 插入一个技能，默认参数类型：Skill，指定keyProperty查询后自动将ID赋值到对象中 -->
 	<insert id="insertSkill" useGeneratedKeys="true" keyProperty="skillID">
@@ -61,6 +105,16 @@
 		<![CDATA[
 			update kt_skill_relation set right_skill_no = right_skill_no-(#{rightSkillNo}-#{leftSkillNo}+1) where right_skill_no >= #{rightSkillNo};
 			update kt_skill_relation set left_skill_no = left_skill_no-(#{rightSkillNo}-#{leftSkillNo}+1) where left_skill_no >= #{leftSkillNo};
+		]]>
+	</update>
+	<update id="updateIncreaseSkillLevel" parameterType="int">
+		<![CDATA[
+			update kt_skill_relation set skill_level = skill_level+1 where skill_id = #{skillID}
+		]]>
+	</update>
+	<update id="updateDecreaseSkillLevel" parameterType="int">
+		<![CDATA[
+			update kt_skill_relation set skill_level = skill_level-1 where skill_id = #{skillID}
 		]]>
 	</update>
 </mapper>

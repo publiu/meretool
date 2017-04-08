@@ -48,7 +48,7 @@ public class SkillDaoTest extends BaseTest {
 	}
 	
 	@Test
-	//@Transactional
+	@Transactional
 	public void deleteSkillAndUpdate() {
 		Skill skill = skillDao.getById(2);
 		Integer leftSkillNo = skill.getLeftSkillNo();

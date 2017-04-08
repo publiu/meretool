@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.mereking.meretool.dto.QuerySkillLinkResultDTO;
+import com.mereking.meretool.dto.QuerySkillLinkResultListDTO;
 import com.mereking.meretool.entity.Skill;
 
 public interface SkillDao {
@@ -19,6 +21,12 @@ public interface SkillDao {
 	 * @return
 	 */
 	List<Skill> queryAllSkill();
+	
+	/**
+	 * 查询技能关联关系
+	 * @return
+	 */
+	QuerySkillLinkResultListDTO querySkillLink();
 	
 	/**
 	 * 插入技能
@@ -56,5 +64,18 @@ public interface SkillDao {
 	 * @return
 	 */
 	Integer deleteSkillAndRelation(@Param("leftSkillNo") Integer leftSkillNo, @Param("rightSkillNo") Integer rightSkillNo);
+	
+	/**
+	 * 增加技能等级
+	 * @param skillID
+	 * @return
+	 */
+	Integer updateIncreaseSkillLevel(Integer skillID);
+	/**
+	 * 减少技能等级
+	 * @param skillID
+	 * @return
+	 */
+	Integer updateDecreaseSkillLevel(Integer skillID);
 
 }
