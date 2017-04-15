@@ -7,49 +7,69 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>  
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<head>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="left"><a href="#" class="back link"> <i class="icon icon-back"></i><span>返回</span></a></div>
+    <div class="center sliding">添加技能</div>
+    <div class="right">
+    	
+    </div>
+  </div>
+</div>
+
+<div class="pages navbar-through toolbar-through">
+  <!-- Page, data-page contains page name-->
+  <div data-page="skill_view" class="page">
+
+	<div class="page-content">
+		
+		<div class="content-block-title">父技能名称：${skill.skillName}-等级${skill.skillLevel }</div>
+		  <!-- Inset content block -->
+		  <div class="content-block inset">
+		    <div class="content-block-inner">
+		      <p>${skill.skillDetail }</p>
+		    </div>
+		  </div>
+		  <form action="/skill/insertSkill.action" method="post">
+		  <input type="hidden" name="parentSkillID" value="${skill.skillID}" />
+				<div class="list-block inset">
+				  <ul>
+				    <!-- Text inputs -->
+				    <li>
+				      <div class="item-content">
+				        <div class="item-media"><i class="icon icon-form-name"></i></div>
+				        <div class="item-inner">
+				          <div class="item-title label">技能名称</div>
+				          <div class="item-input">
+				            <input type="text" name="skillName" value="" />
+				          </div>
+				        </div>
+				      </div>
+				    </li>
+				    <li class="align-top">
+				      <div class="item-content">
+				        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+				        <div class="item-inner">
+				          <div class="item-title label">技能描述</div>
+				          <div class="item-input">
+				            <textarea name="skillDetail"></textarea>
+				          </div>
+				        </div>
+				      </div>
+				    </li>
+				  </ul>
+				</div>
+				<div class="content-block">
+			        <div class="row">
+			          <div class="col-100">
+			            <input type="submit" value="提交" class="button button-big button-fill color-green"/>
+			          </div>
+			        </div>
+			    </div>
+			</form>
+	</div>
+  </div>
+</div>
 
 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-<!-- jQuery AND jQueryUI -->
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/libs/jquery/1.6/jquery.min.js"></script>
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
-
-<link rel="stylesheet" href="../third-resources/OA_coreadmin/css/min.css" />
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/min.js"></script>
-<script type="text/javascript" src="../third-resources/OA_coreadmin/content/settings/main.js"></script>
-<link rel="stylesheet" href="../third-resources/OA_coreadmin/content/settings/style.css" />
-
-<style>
-
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-</style>
-
-</head>
-<body>
-
-<table>
-	<tr><td>父技能名称：${skill.skillName}</td></tr>
-</table>
-<form action="/skill/insertSkill.action" method="post">
-	<input type="hidden" name="parentSkillID" value="${skill.skillID}" />
-	技能名称：<input type="text" name="skillName" value="" /><br/>
-	技能描述：<textarea rows="20" cols="" name="skillDetail" ></textarea><br/>
-	<input type="submit" value="提交" />
-</form>
-
-
-
-
-</body>
-</html>

@@ -1,5 +1,5 @@
 <html>
 <body>
-<h2>id错误 id = %12%</h2>
+<h2>用户ID错误</h2>
 </body>
 </html>

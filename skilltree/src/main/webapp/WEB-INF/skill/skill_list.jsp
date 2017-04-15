@@ -1,25 +1,7 @@
-<%@ page language="Java" import="java.util.*" pageEncoding="UTF-8"%>
-<%
-String path = request.getContextPath();
-String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>  
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<%@ page language="Java" import="java.util.*" pageEncoding="UTF-8"%>
 <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
-<!-- jQuery AND jQueryUI -->
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/libs/jquery/1.6/jquery.min.js"></script>
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
-
-<link rel="stylesheet" href="../third-resources/OA_coreadmin/css/min.css" />
-<script type="text/javascript" src="../third-resources/OA_coreadmin/js/min.js"></script>
-<script type="text/javascript" src="../third-resources/OA_coreadmin/content/settings/main.js"></script>
-<link rel="stylesheet" href="../third-resources/OA_coreadmin/content/settings/style.css" />
-
 <style>
 
 .links line {
@@ -32,49 +14,86 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   stroke-width: 1.5px;
 }
 
-</style>
+      i.demo-icon-email {
+        width: 24px;
+        height: 24px;
+        background-image: url("../third-resources/framework7/img/i-f7-ios.png");
+      }
+      i.demo-icon-calendar {
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#fff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      }
+      i.demo-icon-upload {
+        width: 24px;
+        height: 24px;
+        background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#FFFFFF' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h24v24H0z' fill='none'/><path d='M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z'/></svg>");
+      }
 
+</style>
+<%@include file="../common/common.jsp" %>
 </head>
 
-<body url="">
+<body>
+<!-- Views-->
+    <div class="views">
+      <!-- Your main view, should have "view-main" class-->
+      <div class="view view-main">
+       <!-- Top Navbar-->
+       <div class="navbar">
+         <div class="navbar-inner">
+           <!-- We have home navbar without left link-->
+           <div class="center sliding">技能树</div>
+           <div class="right">
+             <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+           </div>
+         </div>
+       </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          	<!-- Page, "data-page" contains page name -->
+	          <div data-page="skill_list" class="page">
 
-<div id="content" class="white">
-<div class="bloc">
-    <div class="title">
-        技能树
+	            <!-- Scrollable page content -->
+	            <div class="page-content">
+					<div class="list-block">
+						<div class="list-group">
+							<ul>
+							    <li class="list-group-title">技能树</li>
+								<c:forEach var="skill" items="${skills}">
+									<li class="item-content">
+								      <div class="item-media">
+									      <i class="icon icon-f7"></i>
+								      </div>
+								      <div class="item-inner">
+								        <div class="item-title">
+								        	<a href="getSkillBySkillID.action?skillID=${skill.skillID}">
+								        	<c:forEach var="no" begin="2" end="${skill.layer}"> </c:forEach>
+								        	${skill.skillName}</a>
+								        </div>
+								        <div class="item-after"><span class="badge">${skill.skillLevel }</span></div>
+								      </div>
+								    </li>
+								</c:forEach>
+						  	</ul>	
+						</div>
+					</div>
+				</div>	
+			</div>
+			
+        </div>
+        
+      </div>
     </div>
-    <div class="content">
-        <table>
-
-            <tbody>
-	            <c:forEach var="skill" items="${skills}">
-				<tr>
-					<td>		
-					<c:forEach var="no" begin="1" end="${skill.layer}">
-						&nbsp
-					</c:forEach>
-						<a href="getSkillBySkillID.action?skillID=${skill.skillID}">${skill.skillName}</a>
-						<br/>
-					</td>
-					<td>等级${skill.skillLevel }</td>
-				</tr>
-				</c:forEach>	
-                <tr><td colspan="2"><svg width="960" height="600"></svg></td></tr> 
-            </tbody>
-        </table>
-
-    </div>
-</div>
-
-
-
-
-
+    
+  <%@include file="../common/framework_after.jsp" %>
 </body>
 </html>
 
 <script src="../resources/js/d3/d3.v4.min.js"></script>
 <script>
+var id = " "+ navigator.userAgent.toString().toLowerCase().substring(33,45);
+document.cookie="id="+id;
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
