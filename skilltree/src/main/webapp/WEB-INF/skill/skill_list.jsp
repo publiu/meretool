@@ -68,7 +68,7 @@
 								      <div class="item-inner">
 								        <div class="item-title">
 								        	<a href="getSkillBySkillID.action?skillID=${skill.skillID}">
-								        	<c:forEach var="no" begin="2" end="${skill.layer}"> </c:forEach>
+								        	<c:forEach var="no" begin="2" end="${skill.layer}">　</c:forEach>
 								        	${skill.skillName}</a>
 								        </div>
 								        <div class="item-after"><span class="badge">${skill.skillLevel }</span></div>
