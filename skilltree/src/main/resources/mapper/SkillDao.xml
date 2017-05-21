@@ -60,6 +60,21 @@
 		order by ksr.left_skill_no;
 		]]>
 	</select>
+	<select id="querySkillBySkillName" resultType="Skill">
+		<![CDATA[ 
+		select 
+			ks.skill_id as skillID, 
+			ks.skill_name as skillName, 
+			ks.skill_detail as skillDetail, 
+			ksr.layer as layer, 
+			ksr.left_skill_no as leftSkillNo, 
+			ksr.right_skill_no as rightSkillNo, 
+			ksr.skill_level as skillLevel 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		where ks.skill_name = #{skillName}
+		order by ksr.left_skill_no;
+		]]>
+	</select>
 	<!-- querySkillLink查询所有关联关系结果映射 -->
 	<resultMap type="com.mereking.meretool.dto.QuerySkillLinkResultListDTO" id="querySkillLinkResultListDTO">
 		<collection property="querySkillLinkResultDTOs" ofType="com.mereking.meretool.dto.QuerySkillLinkResultDTO">

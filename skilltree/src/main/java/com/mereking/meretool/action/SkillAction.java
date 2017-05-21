@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mereking.meretool.dto.InsertSkillDTO;
 import com.mereking.meretool.dto.QueryAllSkillDTO;
@@ -185,6 +187,27 @@ public class SkillAction {
 	public String updateDecreaseSkillLevel(Integer skillID) {
 		skillService.updateDecreaseSkillLevel(skillID);
 		return "redirect:queryAllSkill";
+	}
+	/**
+	 * 跳转至思维导图导入页面
+	 * @param skillID
+	 * @return
+	 */
+	@RequestMapping("/importXmindFilePage")
+	public String importXmindFilePage(Integer skillID) {
+		return "skill/xmind_import";
+	}
+	
+	/**
+	 * 导入思维导图技能
+	 * @param xmindFile
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/importXmindFile")
+	@ResponseBody
+	public Map<String, Object> importXmindFile(@RequestParam("xmindFile")MultipartFile xmindFile, HttpServletRequest request, Model model) {
+		return skillService.importXmindFile(xmindFile, request);
 	}
 
 }

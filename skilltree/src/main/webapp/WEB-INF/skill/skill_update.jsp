@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		      <p>${skill.skillDetail }</p>
 		    </div>
 		  </div>
-		  <form action="/skill/updateSkill.action" method="post">
+		  <form action="./updateSkill.action" method="post">
 		  <input type="hidden" name="skillID" value="${skill.skillID}" />
 				<div class="list-block inset">
 				  <ul>

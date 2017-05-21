@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 import com.mereking.meretool.dto.QuerySkillLinkResultListDTO;
 import com.mereking.meretool.entity.Skill;
-import com.mereking.meretool.entity.Stock;
 
 public interface SkillDao {
 	/**
@@ -14,13 +13,20 @@ public interface SkillDao {
 	 * @param skillId 技能ID
 	 * @return
 	 */
-	Skill getById(Integer skillID);
+	Skill getById(@Param("skillID") Integer skillID);
 	
 	/**
 	 * 查询所有技能
 	 * @return
 	 */
 	List<Skill> queryAllSkill(@Param("leftSkillNo") Integer leftSkillNo,@Param("rightSkillNo")Integer rightSkillNo,@Param("layer") Integer layer);
+	
+	/**
+	 * 根据技能名称查询
+	 * @param skillName
+	 * @return
+	 */
+	List<Skill> querySkillBySkillName(@Param("skillName") String skillName);
 	
 	/**
 	 * 查询该层的所有技能

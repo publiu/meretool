@@ -1,6 +1,11 @@
 package com.mereking.meretool.service;
 
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mereking.meretool.dto.InsertSkillDTO;
 import com.mereking.meretool.dto.QueryAllSkillDTO;
@@ -45,7 +50,7 @@ public interface SkillService {
 	 * 插入一个技能
 	 * @param insertSkillDTO
 	 */
-	public void insertSkill(InsertSkillDTO insertSkillDTO);
+	public Skill insertSkill(InsertSkillDTO insertSkillDTO);
 
 	/**
 	 * 删除一个技能
@@ -70,5 +75,12 @@ public interface SkillService {
 	 * @param skillID
 	 */
 	public void updateDecreaseSkillLevel(Integer skillID);
+	
+	/**
+	 * 插入xmind文件
+	 * @param file
+	 * @param request
+	 */
+	public Map<String, Object> importXmindFile(MultipartFile file ,HttpServletRequest request);
 
 }
