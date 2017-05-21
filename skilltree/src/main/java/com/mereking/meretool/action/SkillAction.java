@@ -14,24 +14,100 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mereking.meretool.dto.InsertSkillDTO;
+import com.mereking.meretool.dto.QueryAllSkillDTO;
 import com.mereking.meretool.dto.QuerySkillLinkDTO;
 import com.mereking.meretool.dto.QuerySkillLinkResultDTO;
+import com.mereking.meretool.dto.QuerySkillsByLayerAjaxVO;
 import com.mereking.meretool.dto.SkillAjaxLinkVO;
 import com.mereking.meretool.dto.SkillAjaxNodeVO;
+import com.mereking.meretool.dto.UpdateSkillDTO;
+import com.mereking.meretool.dto.UpdateUserDTO;
 import com.mereking.meretool.entity.Skill;
+import com.mereking.meretool.entity.User;
 import com.mereking.meretool.service.SkillService;
+import com.mereking.meretool.service.UserService;
 
 @Controller
 @RequestMapping("/skill")
 public class SkillAction {
 	@Autowired
 	private SkillService skillService;
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping("/querySkillTree")
+	public String querySkillTree() {
+		return "skill/skill_tree";
+	}
+	
 	
 	@RequestMapping("/queryAllSkill")
-	public String queryAllSkill(Model model, HttpServletRequest request) {
-		List<Skill> skills = skillService.queryALLSkill();
+	public String queryAllSkill(QueryAllSkillDTO queryAllSkillDTO, Model model, HttpServletRequest request) {
+		// 获取用户查询记录
+		User user = null;
+		if (queryAllSkillDTO.getUsername() !=null && !queryAllSkillDTO.getUsername().equals("")) {
+			user = userService.getByUsername(queryAllSkillDTO.getUsername());
+		}
+		else {
+			user = userService.queryAllUser().get(0);
+		}
+		Integer lastSkillLayer = user.getLastSkillLayer();
+		Integer lastSkillID = user.getLastSkillID();
+		Integer lastSkillLayerNum = user.getLastSkillLayerNum();
+		// 判断记录与查询
+		if (queryAllSkillDTO.getLayer() == null) {
+			queryAllSkillDTO.setLayer(lastSkillLayer);
+		} else {
+			lastSkillLayer = queryAllSkillDTO.getLayer();
+		}
+		if (queryAllSkillDTO.getSkillID() == null) {
+			queryAllSkillDTO.setSkillID(lastSkillID);
+		} else {
+			lastSkillID = queryAllSkillDTO.getSkillID();
+		}
+		if (queryAllSkillDTO.getLayerNum() == null) {
+			queryAllSkillDTO.setLayerNum(lastSkillLayerNum);
+		} else {
+			lastSkillLayerNum = queryAllSkillDTO.getLayerNum();
+		}
+		
+		// 记录用户查询
+		UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+		updateUserDTO.setUsername(user.getUsername());
+		updateUserDTO.setLastSkillLayer(lastSkillLayer);
+		updateUserDTO.setLastSkillID(lastSkillID);
+		updateUserDTO.setLastSkillLayerNum(lastSkillLayerNum);
+		userService.updateUserType(updateUserDTO);
+
+		// 开始查询
+		List<Skill> skills = skillService.queryALLSkill(queryAllSkillDTO);
 		model.addAttribute("skills", skills);
+		model.addAttribute("username", user.getUsername());
+		model.addAttribute("lastSkillLayer", lastSkillLayer);
+		model.addAttribute("lastSkillID", lastSkillID);
+		model.addAttribute("lastSkillLayerNum", lastSkillLayerNum);
 		return "skill/skill_list";
+	}
+	
+	@RequestMapping("/querySkillsByLayer")
+	@ResponseBody
+	public Map<String, Object> querySkillsByLayer(Integer layer) {
+		if (layer == null) {
+			layer = 1;
+		}
+		List<Skill> skills = skillService.querySkillsByLayer(layer);
+		List<QuerySkillsByLayerAjaxVO> querySkillsByLayerAjaxVOs = new ArrayList<QuerySkillsByLayerAjaxVO>();
+		// 增加技能
+		for (Skill skill : skills) {
+			QuerySkillsByLayerAjaxVO querySkillsByLayerAjaxVO = new QuerySkillsByLayerAjaxVO(skill);
+			querySkillsByLayerAjaxVOs.add(querySkillsByLayerAjaxVO);
+		}
+		
+		Map<String, Object> result = new HashedMap();
+		result.put("errorNo", 0);
+		result.put("errorInfo", "");
+		result.put("querySkillsByLayerAjaxVOs", querySkillsByLayerAjaxVOs);
+		return result;
 	}
 	
 	@RequestMapping("/queryAllSkillAjax")
@@ -77,6 +153,20 @@ public class SkillAction {
 	@RequestMapping("/insertSkill")
 	public String insertSkill(InsertSkillDTO insertSkillDTO) {
 		skillService.insertSkill(insertSkillDTO);
+		return "redirect:queryAllSkill";
+	}
+	
+	@RequestMapping("/updateSkillPage")
+	public String gotoUpdateSkill(Integer skillID, Model model, HttpServletRequest reqeust) {
+		Skill skill = skillService.getBySkillID(skillID);
+		model.addAttribute("skill", skill);
+		return "skill/skill_update";
+	}
+	
+	@RequestMapping("/updateSkill")
+	public String updateSkill(UpdateSkillDTO updateSkillDTO, Model model) {
+		skillService.updateSkill(updateSkillDTO);
+		model.addAttribute("skillID", updateSkillDTO.getSkillID());
 		return "redirect:queryAllSkill";
 	}
 	

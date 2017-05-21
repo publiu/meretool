@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * 技能
- * @author Administrator
+ * @author mereKing
  *
  */
 public class Skill {

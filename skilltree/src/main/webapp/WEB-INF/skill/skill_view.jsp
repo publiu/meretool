@@ -33,8 +33,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  <a href="updateIncreaseSkillLevel.action?skillID=${skill.skillID}" class="button button-round">提升</a>
 			  <a href="updateDecreaseSkillLevel.action?skillID=${skill.skillID}" class="button button-round">降低</a>
 			</p>
+			<p><a href="updateSkillPage.action?skillID=${skill.skillID}" class="button button-round button-fill color-green ">修改</a></p>
 			<p><a href="insertSkillPage.action?parentSkillID=${skill.skillID}" class="button button-round button-fill color-green ">添加</a></p>
-			<p><a href="deleteSkill.action?skillID=${skill.skillID}" class="button button-round button-fill color-red ">删除</a></p>
+			<p><a href="#" onclick="confirm('确定要删除？','deleteSkill.action?skillID=${skill.skillID}')" class="button button-round button-fill color-red ">删除</a></p>
 
 		</div>
 	</div>

@@ -45,7 +45,7 @@
            <!-- We have home navbar without left link-->
            <div class="center sliding">技能树</div>
            <div class="right">
-             <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+             <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel" onclick="login()"> <i class="icon icon-bars"></i></a>
            </div>
          </div>
        </div>
@@ -56,6 +56,98 @@
 
 	            <!-- Scrollable page content -->
 	            <div class="page-content">
+				  <form action="queryAllSkill.action" method="post">
+				  	   <input type="hidden" name="username" id="usernameID"/>
+				  	   <input type="hidden" name="lastSkillID" id="lastSkillID" value="${lastSkillID}"/>
+					   <div class="list-block">
+						  <ul>
+						    <li>
+						      <!-- Smart select, will be opened in Picker with custom height -->
+						      <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
+						       <!-- select -->
+						        <select name="layer" id="layerID"  onchange="querySkillsByLayer()">
+						          <c:forEach var="no" begin="1" end="20">
+						          	<c:choose>
+						          		<c:when test="${no==lastSkillLayer}">
+						          			<option value="${no}" selected>${no}</option>
+						          		</c:when>
+						          		<c:otherwise>
+						          			<option value="${no}">${no}</option>
+						          		</c:otherwise>
+						          	
+						          	</c:choose>
+						          	
+								  </c:forEach>
+						          
+						        </select>
+						        <div class="item-content">
+						          <div class="item-inner">
+						            <!-- Select label -->
+						            <div class="item-title">层次</div>
+						            <!-- Selected value, not required -->
+						            <div class="item-after">${lastSkillLayer}</div>
+						          </div>
+						        </div>
+						      </a>
+						    </li>
+						    <li>
+						      <!-- Smart select, will be opened in Picker with custom height -->
+						      <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
+						       <!-- select -->
+						        <select name="skillID" id="skillID">
+						        </select>
+						        <div class="item-content">
+						          <div class="item-inner">
+						            <!-- Select label -->
+						            <div class="item-title">技能</div>
+						            <!-- Selected value, not required -->
+						            <div class="item-after" id="skillIDShow"></div>
+						          </div>
+						        </div>
+						      </a>
+						    </li>
+						    <li>
+						    <!-- Smart select, will be opened in Picker with custom height -->
+						    <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
+						       <!-- select -->
+						        <select name="layerNum">
+						        <c:forEach var="no" begin="1" end="20">
+						          <c:choose>
+					          		<c:when test="${no==lastSkillLayerNum}">
+					          			<option value="${no}" selected>${no}</option>
+					          		</c:when>
+					          		<c:otherwise>
+					          			<option value="${no}">${no}</option>
+					          		</c:otherwise>
+						          	
+						          </c:choose>
+						        </c:forEach>
+						        </select>
+						        <div class="item-content">
+						          <div class="item-inner">
+						            <!-- Select label -->
+						            <div class="item-title">深度</div>
+						            <!-- Selected value, not required -->
+						            <div class="item-after">${lastSkillLayerNum}</div>
+						          </div>
+						        </div>
+						      </a>
+						    </li>
+						    <li>
+						    </li>
+						  </ul>
+						</div>
+
+						<div class="content-block">
+					        <div class="row">
+					          <div class="col-100">
+					            <input type="submit" onclick="waiting()" value="提交" class="button button-big button-fill color-green"/>
+					          </div>
+					        </div>
+					    </div>
+					</form>
+	            	
+	            
 					<div class="list-block">
 						<div class="list-group">
 							<ul>
@@ -68,10 +160,12 @@
 								      <div class="item-inner">
 								        <div class="item-title">
 								        	<a href="getSkillBySkillID.action?skillID=${skill.skillID}">
-								        	<c:forEach var="no" begin="2" end="${skill.layer}">　</c:forEach>
+								        	<c:forEach var="no" begin="1" end="${skill.layer-lastSkillLayer}">　</c:forEach>
 								        	${skill.skillName}</a>
 								        </div>
+								        <c:if test="${(skill.rightSkillNo-skill.leftSkillNo)<=1}">
 								        <div class="item-after"><span class="badge">${skill.skillLevel }</span></div>
+								        </c:if>
 								      </div>
 								    </li>
 								</c:forEach>
@@ -92,8 +186,110 @@
 
 <script src="../resources/js/d3/d3.v4.min.js"></script>
 <script>
-var id = " "+ navigator.userAgent.toString().toLowerCase().substring(33,45);
-document.cookie="id="+id;
+/* var id = navigator.userAgent.toString().toLowerCase().substring(33,45);
+var spresult = id.split(" ");
+id = spresult[0]; 
+$$('#usernameID').val(id);*/
+if (!document.cookie) {
+	login();
+} else {
+	init();
+}
+
+function login() {
+	myApp.modalPassword('', '登录', function (id) {
+    	myApp.showPreloader("校验中");
+    	$$.ajax({
+    		url : '../queryUserId.do',
+    		type : 'POST',
+    		data : {
+    			'id' : id
+    		},
+    		success : function(data) {
+    			myApp.hidePreloader();
+    			data = JSON.parse(data);
+    			if (data.errorNo == 0) {
+    				setCookie("id", id, 10);
+    		        init();
+    			} else {
+    				myApp.alert(data.errorInfo);
+    				login();
+    			}
+    		}
+    		
+    	});
+        
+    }, function() {
+    	// 删除cookie
+    	setCookie("id", "", -1);
+    	login();
+    });
+}
+
+//设置cookie
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+var defaultSkillID;
+function init() {
+	defaultSkillID=$$("#lastSkillID").val();
+	// 加载后运行一次
+	querySkillsByLayer();
+}
+
+
+function querySkillsByLayer() {
+	var layer = $$('#layerID').val();
+	myApp.showPreloader("正在查找第"+layer+"层技能");
+	$$.ajax({
+		url : 'querySkillsByLayer.do?rnd=' + new Date().getTime(),
+		type : 'POST',
+		data : {
+			'layer' : layer
+		},
+		success : function(data) {
+			data = JSON.parse(data);
+			myApp.hidePreloader();
+			if (data.errorNo == 0) {
+				if (data.querySkillsByLayerAjaxVOs == null || data.querySkillsByLayerAjaxVOs.length < 1) {
+					myApp.alert("第"+layer+"层无技能","提示");
+				} else {
+					$$('#skillID').html("");
+					var isSelected = false;
+					for(var i=0; i<data.querySkillsByLayerAjaxVOs.length; i++) {
+						var skill = data.querySkillsByLayerAjaxVOs[i];
+						if (skill.skillID == defaultSkillID) {
+							$$('#skillID').append('<option value="'+skill.skillID+'" selected>'+skill.skillName+'</option>');
+							$$('#skillIDShow').html(skill.skillName);
+							isSelected = true;
+						} else {
+							$$('#skillID').append('<option id="skillOption'+i+'" value="'+skill.skillID+'">'+skill.skillName+'</option>');
+						}
+					}
+					if(!isSelected) {
+						$$('#skillOption0').attr('selected', true);
+						$$('#skillIDShow').html($$('#skillOption0').html());
+					}
+				}
+				
+
+			} else {
+				myApp.alert("提示",data.errorInfo);
+			}
+		}
+	});
+}
+
+
+
+
+
+
+
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),

@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mereking.meretool.dao.SkillDao;
 import com.mereking.meretool.dto.InsertSkillDTO;
+import com.mereking.meretool.dto.QueryAllSkillDTO;
 import com.mereking.meretool.dto.QuerySkillLinkDTO;
 import com.mereking.meretool.dto.QuerySkillLinkResultDTO;
+import com.mereking.meretool.dto.UpdateSkillDTO;
 import com.mereking.meretool.entity.Skill;
 import com.mereking.meretool.service.SkillService;
 
@@ -28,8 +30,9 @@ public class SkillServiceImpl implements SkillService {
 		return skillDao.getById(skillID);
 	}
 
-	public List<Skill> queryALLSkill() {
-		return skillDao.queryAllSkill();
+	public List<Skill> queryALLSkill(QueryAllSkillDTO queryAllSkillDTO) {
+		Skill skill = skillDao.getById(queryAllSkillDTO.getSkillID());
+		return skillDao.queryAllSkill(skill.getLeftSkillNo(), skill.getRightSkillNo(), skill.getLayer() + queryAllSkillDTO.getLayerNum());
 	}
 
 	@Transactional
@@ -75,6 +78,20 @@ public class SkillServiceImpl implements SkillService {
 	public List<QuerySkillLinkResultDTO> querySkillLink(QuerySkillLinkDTO querySkillLinkDTO) {
 		List<QuerySkillLinkResultDTO> querySkillLinkResultDTOs = skillDao.querySkillLink().getQuerySkillLinkResultDTOs();
 		return querySkillLinkResultDTOs;
+	}
+
+	@Override
+	public void updateSkill(UpdateSkillDTO updateSkillDTO) {
+		Skill skill = skillDao.getById(updateSkillDTO.getSkillID());
+		skill.setSkillName(updateSkillDTO.getSkillName());
+		skill.setSkillDetail(updateSkillDTO.getSkillDetail());
+		skill.setSkillModified(new Date());
+		skillDao.updateSkill(skill);
+	}
+
+	@Override
+	public List<Skill> querySkillsByLayer(Integer layer) {
+		return skillDao.querySkillsByLayer(layer);
 	}
 
 	

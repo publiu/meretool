@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mereking.meretool.dao.UserDao">
+	<!-- skill基本映射 -->
+	<resultMap type="User" id="user">
+		<id property="id" column="id" />
+		
+		<result property="username" column="username"/>
+		<result property="lastSkillLayer" column="last_skill_layer"/>
+		<result property="lastSkillID" column="last_skill_id"/>
+		<result property="lastSkillLayerNum" column="last_skill_layer_num"/>
+	</resultMap>
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="getByUsername" resultMap="user" parameterType="string">
+		select 
+			*
+		from kt_user ku
+		where ku.username = #{username}
+	</select>
+	<select id="queryAllUser" resultMap="user">
+		select 
+			*
+		from kt_user ku;
+	</select>
+	<update id="updateUserType" parameterType="user">
+		<![CDATA[
+			update kt_user set last_skill_layer=#{user.lastSkillLayer}, last_skill_id=#{user.lastSkillID},last_skill_layer_num = #{user.lastSkillLayerNum} where username = #{user.username} 
+		]]>
+	</update>
+</mapper>

@@ -31,6 +31,7 @@
 		where ks.skill_id = #{skillID};
 	</select>
 	<select id="queryAllSkill" resultType="Skill">
+		<![CDATA[ 
 		select 
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
@@ -40,7 +41,24 @@
 			ksr.right_skill_no as rightSkillNo, 
 			ksr.skill_level as skillLevel 
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		where ksr.left_skill_no >= #{leftSkillNo} and ksr.right_skill_no <= #{rightSkillNo} and ksr.layer <= #{layer}
 		order by ksr.left_skill_no;
+		]]>
+	</select>
+	<select id="querySkillsByLayer" resultType="Skill">
+		<![CDATA[ 
+		select 
+			ks.skill_id as skillID, 
+			ks.skill_name as skillName, 
+			ks.skill_detail as skillDetail, 
+			ksr.layer as layer, 
+			ksr.left_skill_no as leftSkillNo, 
+			ksr.right_skill_no as rightSkillNo, 
+			ksr.skill_level as skillLevel 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		where ksr.layer = #{layer}
+		order by ksr.left_skill_no;
+		]]>
 	</select>
 	<!-- querySkillLink查询所有关联关系结果映射 -->
 	<resultMap type="com.mereking.meretool.dto.QuerySkillLinkResultListDTO" id="querySkillLinkResultListDTO">
@@ -115,6 +133,11 @@
 	<update id="updateDecreaseSkillLevel" parameterType="int">
 		<![CDATA[
 			update kt_skill_relation set skill_level = skill_level-1 where skill_id = #{skillID}
+		]]>
+	</update>
+	<update id="updateSkill" parameterType="Skill">
+		<![CDATA[
+			update kt_skill set skill_name=#{skill.skillName}, skill_detail=#{skill.skillDetail} where skill_id = #{skill.skillID}
 		]]>
 	</update>
 </mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mereking.meretool.dao.StockDao">
+	<!-- stock基本映射 -->
+	<resultMap type="Stock" id="stock">
+		<id property="id" column="id" />
+		
+		<result property="gid" column="gid"/>
+		<result property="gidShort" column="gid_short"/>
+		<result property="name" column="name"/>
+		<result property="nameShort" column="name_short"/>
+		<result property="type" column="type"/>
+	</resultMap>
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="getById" resultType="Stock" parameterType="int">
+		select 
+			ks.id as id, 
+			ks.gid as gid, 
+			ks.gid_short as gidShort, 
+			ksr.name as name, 
+			ksr.name_short as nameShort, 
+			ksr.type as type
+		from kt_stock ks
+		where ks.id = #{id};
+	</select>
+	<select id="queryStocksByGid" resultType="Stock">
+		<![CDATA[ 
+		select 
+			ks.id as id, 
+			ks.gid as gid, 
+			ks.gid_short as gidShort, 
+			ks.name as name, 
+			ks.name_short as nameShort, 
+			ks.type as type
+		from kt_stock ks
+		where ks.gid = #{gid}
+		]]>
+	</select>
+
+	<select id="queryStocks" resultType="Stock">
+		<![CDATA[ 
+		select 
+			ks.id as id, 
+			ks.gid as gid, 
+			ks.gid_short as gidShort, 
+			ksr.name as name, 
+			ksr.name_short as nameShort, 
+			ksr.type as type
+		from kt_stock ks
+		]]>
+	</select>
+	<!-- 插入一个股票 -->
+	<insert id="insertStock" useGeneratedKeys="true" keyProperty="stockID">
+		<![CDATA[
+			insert into kt_stock (gid, gid_short, name, name_short, type)
+						value(#{gid}, #{gidShort}, #{name}, #{nameShort}, #{type});
+		]]>
+	</insert>
+
+	
+</mapper>
