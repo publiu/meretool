@@ -37,7 +37,7 @@ public interface SkillService {
 	 * @param layer
 	 * @return
 	 */
-	public List<Skill> querySkillsByLayer(Integer layer);
+	public List<Skill> querySkillsByLayer(Integer layer, Integer userId);
 	
 	/**
 	 * 查询技能关联关系
@@ -81,6 +81,6 @@ public interface SkillService {
 	 * @param file
 	 * @param request
 	 */
-	public Map<String, Object> importXmindFile(MultipartFile file ,HttpServletRequest request);
+	public Map<String, Object> importXmindFile(Integer userId, MultipartFile file ,HttpServletRequest request);
 
 }

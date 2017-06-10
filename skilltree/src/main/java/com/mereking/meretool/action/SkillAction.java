@@ -46,12 +46,9 @@ public class SkillAction {
 	@RequestMapping("/queryAllSkill")
 	public String queryAllSkill(QueryAllSkillDTO queryAllSkillDTO, Model model, HttpServletRequest request) {
 		// 获取用户查询记录
-		User user = null;
-		if (queryAllSkillDTO.getUsername() !=null && !queryAllSkillDTO.getUsername().equals("")) {
-			user = userService.getByUsername(queryAllSkillDTO.getUsername());
-		}
-		else {
-			user = userService.queryAllUser().get(0);
+		User user = (User) request.getSession().getAttribute("user");
+		if (user == null) {
+			user = userService.getByUsername("default");
 		}
 		Integer lastSkillLayer = user.getLastSkillLayer();
 		Integer lastSkillID = user.getLastSkillID();
@@ -72,6 +69,7 @@ public class SkillAction {
 		} else {
 			lastSkillLayerNum = queryAllSkillDTO.getLayerNum();
 		}
+		queryAllSkillDTO.setUserId(user.getId());
 		
 		// 记录用户查询
 		UpdateUserDTO updateUserDTO = new UpdateUserDTO();
@@ -93,11 +91,13 @@ public class SkillAction {
 	
 	@RequestMapping("/querySkillsByLayer")
 	@ResponseBody
-	public Map<String, Object> querySkillsByLayer(Integer layer) {
+	public Map<String, Object> querySkillsByLayer(Integer layer, HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("user");
+		
 		if (layer == null) {
 			layer = 1;
 		}
-		List<Skill> skills = skillService.querySkillsByLayer(layer);
+		List<Skill> skills = skillService.querySkillsByLayer(layer, user.getId());
 		List<QuerySkillsByLayerAjaxVO> querySkillsByLayerAjaxVOs = new ArrayList<QuerySkillsByLayerAjaxVO>();
 		// 增加技能
 		for (Skill skill : skills) {
@@ -114,8 +114,11 @@ public class SkillAction {
 	
 	@RequestMapping("/queryAllSkillAjax")
 	@ResponseBody
-	public Map<String, Object> queryAllSkillAjax() {
-		List<QuerySkillLinkResultDTO> querySkillLinkResultDTOs = skillService.querySkillLink(new QuerySkillLinkDTO());
+	public Map<String, Object> queryAllSkillAjax(HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("user");
+		QuerySkillLinkDTO querySkillLinkDTO = new QuerySkillLinkDTO();
+		querySkillLinkDTO.setUserId(user.getId());
+		List<QuerySkillLinkResultDTO> querySkillLinkResultDTOs = skillService.querySkillLink(querySkillLinkDTO);
 		// 定义节点
 		List<SkillAjaxNodeVO> nodes = new ArrayList<SkillAjaxNodeVO>();
 		// 定义关联关系
@@ -153,7 +156,9 @@ public class SkillAction {
 	}
 	
 	@RequestMapping("/insertSkill")
-	public String insertSkill(InsertSkillDTO insertSkillDTO) {
+	public String insertSkill(InsertSkillDTO insertSkillDTO, HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("user");
+		insertSkillDTO.setUserId(user.getId());
 		skillService.insertSkill(insertSkillDTO);
 		return "redirect:queryAllSkill";
 	}
@@ -207,7 +212,8 @@ public class SkillAction {
 	@RequestMapping("/importXmindFile")
 	@ResponseBody
 	public Map<String, Object> importXmindFile(@RequestParam("xmindFile")MultipartFile xmindFile, HttpServletRequest request, Model model) {
-		return skillService.importXmindFile(xmindFile, request);
+		User user = (User) request.getSession().getAttribute("user");
+		return skillService.importXmindFile(user.getId(), xmindFile, request);
 	}
 
 }

@@ -49,13 +49,13 @@ public class SkillServiceImpl implements SkillService {
 
 	public List<Skill> queryALLSkill(QueryAllSkillDTO queryAllSkillDTO) {
 		Skill skill = skillDao.getById(queryAllSkillDTO.getSkillID());
-		return skillDao.queryAllSkill(skill.getLeftSkillNo(), skill.getRightSkillNo(), skill.getLayer() + queryAllSkillDTO.getLayerNum());
+		return skillDao.queryAllSkill(skill.getLeftSkillNo(), skill.getRightSkillNo(), skill.getLayer() + queryAllSkillDTO.getLayerNum(), queryAllSkillDTO.getUserId());
 	}
 
 	@Transactional
 	@Override
 	public Skill insertSkill(InsertSkillDTO insertSkillDTO) {
-		Skill skill = new Skill(insertSkillDTO.getSkillName(), insertSkillDTO.getSkillDetail(), new Date());
+		Skill skill = new Skill(insertSkillDTO.getSkillName(), insertSkillDTO.getSkillDetail(), new Date(), insertSkillDTO.getUserId());
 		Skill parentSkill = skillDao.getById(insertSkillDTO.getParentSkillID());
 		skill = insertSkill(skill, parentSkill);
 		
@@ -107,7 +107,7 @@ public class SkillServiceImpl implements SkillService {
 
 	@Override
 	public List<QuerySkillLinkResultDTO> querySkillLink(QuerySkillLinkDTO querySkillLinkDTO) {
-		List<QuerySkillLinkResultDTO> querySkillLinkResultDTOs = skillDao.querySkillLink().getQuerySkillLinkResultDTOs();
+		List<QuerySkillLinkResultDTO> querySkillLinkResultDTOs = skillDao.querySkillLink(querySkillLinkDTO.getUserId()).getQuerySkillLinkResultDTOs();
 		return querySkillLinkResultDTOs;
 	}
 
@@ -121,15 +121,15 @@ public class SkillServiceImpl implements SkillService {
 	}
 
 	@Override
-	public List<Skill> querySkillsByLayer(Integer layer) {
-		return skillDao.querySkillsByLayer(layer);
+	public List<Skill> querySkillsByLayer(Integer layer, Integer userId) {
+		return skillDao.querySkillsByLayer(layer, userId);
 	}
 
 
 	
 	@Transactional
 	@Override
-	public Map<String, Object> importXmindFile(MultipartFile file, HttpServletRequest request) {
+	public Map<String, Object> importXmindFile(Integer userId, MultipartFile file, HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 获取根节点
 		Element root = getRootElementByXmlFile(file, request);
@@ -137,7 +137,7 @@ public class SkillServiceImpl implements SkillService {
 			// 读取根节点名称
 			String rootName = root.attributeValue("TEXT");
 			// 查询是否存在该节点
-			List<Skill> skillsSameName = skillDao.querySkillBySkillName(rootName);
+			List<Skill> skillsSameName = skillDao.querySkillBySkillName(rootName, userId);
 			if (skillsSameName.size() == 1) {
 				Skill skill = skillsSameName.get(0);
 				// 删除原根节点数据
@@ -191,7 +191,7 @@ public class SkillServiceImpl implements SkillService {
 		Iterator childs = root.elementIterator();
 		while(childs.hasNext()) {
 			Element node = (Element) childs.next();
-			Skill skill = new Skill(node.attributeValue("TEXT"), "", new Date());
+			Skill skill = new Skill(node.attributeValue("TEXT"), "", new Date(), parentSkill.getUserId());
 			skill = insertSkill(skill, parentSkill);
 			if (node.elementIterator().hasNext()) {
 				insertSkillByXmlNode(skill, node);

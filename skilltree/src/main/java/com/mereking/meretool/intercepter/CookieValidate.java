@@ -34,23 +34,12 @@ public class CookieValidate implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1,
 			Object arg2) throws Exception {
-		// TODO Auto-generated method stub
 		String requestUri = request.getRequestURI();
-		if (!requestUri.contains("queryAllSkill") && !requestUri.contains("queryUserId")) {
-			Cookie[] cookies = request.getCookies();  
-	        if(null!=cookies){    
-	            for(Cookie cookie : cookies){    
-	                String cookieValue = cookie.getValue();
-	                System.out.println(cookieValue);
-	                List<User> users = userDao.queryAllUser();
-	                for (User user : users) {
-	                	if (cookieValue.equals(user.getUsername())) {
-		                	return true;
-		                }
-	                }
-	                
-	            }
-	        }
+		if (!requestUri.contains("queryAllSkill") && !requestUri.contains("login") && !requestUri.contains("checkLogin")) {
+			User user = (User) request.getSession().getAttribute("user");
+			if (user != null) {
+				return true;
+			}
 	        return false;
 		}
 		return true;

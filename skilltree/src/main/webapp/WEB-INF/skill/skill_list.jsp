@@ -190,17 +190,35 @@
 var spresult = id.split(" ");
 id = spresult[0]; 
 $$('#usernameID').val(id);*/
-if (!document.cookie) {
+if (checkLogin()) {
 	login();
 } else {
 	init();
 }
-
+// 校验是否登录
+function checkLogin() {
+	var result = false;
+	myApp.showPreloader("校验登录情况");
+	$$.ajax({
+		url : '../checkLogin.do',
+		type : 'POST',
+		async : false,
+		success : function(data) {
+			myApp.hidePreloader();
+			data = JSON.parse(data);
+			if (data.errorNo == 0) {
+				result = true;
+			}
+		}
+	});
+	return result;
+}
+// 登录登出操作
 function login() {
 	myApp.modalPassword('', '登录', function (id) {
     	myApp.showPreloader("校验中");
     	$$.ajax({
-    		url : '../queryUserId.do',
+    		url : '../login.do',
     		type : 'POST',
     		data : {
     			'id' : id
@@ -209,8 +227,7 @@ function login() {
     			myApp.hidePreloader();
     			data = JSON.parse(data);
     			if (data.errorNo == 0) {
-    				setCookie("id", id, 10);
-    		        init();
+    		        mainView.refreshPage();
     			} else {
     				myApp.alert(data.errorInfo);
     				login();
@@ -221,18 +238,22 @@ function login() {
         
     }, function() {
     	// 删除cookie
-    	setCookie("id", "", -1);
-    	login();
+    	//setCookie("id", "", -1);
+    	//login();
+    	myApp.showPreloader("校验中");
+    	$$.ajax({
+    		url : '../logout.do',
+    		type : 'POST',
+    		success : function(data) {
+    			myApp.hidePreloader();
+    			data = JSON.parse(data);
+    			myApp.alert(data.errorInfo);
+    		}
+    		
+    	});
     });
 }
 
-//设置cookie
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
-}
 
 var defaultSkillID;
 function init() {

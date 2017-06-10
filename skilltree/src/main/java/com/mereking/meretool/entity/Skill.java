@@ -18,14 +18,16 @@ public class Skill {
 	private Integer rightSkillNo; // 右值
 	private Integer skillLevel; // 技能等级
 	private Integer layer; // 层次
+	private Integer userId; // 用户ID
 	
 	public Skill() {		
 	}
 	
-	public Skill(String skillName, String skillDetail, Date skillCreate) {
+	public Skill(String skillName, String skillDetail, Date skillCreate, Integer userId) {
 		this.skillName = skillName;
 		this.skillDetail = skillDetail;
 		this.skillCreate = skillCreate;
+		this.userId = userId;
 	}
 	
 	public void initSkillRelation(Integer leftSkillNo, Integer rightSkillNo, Integer skillLevel, Integer layer) {
@@ -88,6 +90,14 @@ public class Skill {
 	}
 	public void setLayer(Integer layer) {
 		this.layer = layer;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 	
 	

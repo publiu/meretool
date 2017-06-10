@@ -19,27 +19,27 @@ public interface SkillDao {
 	 * 查询所有技能
 	 * @return
 	 */
-	List<Skill> queryAllSkill(@Param("leftSkillNo") Integer leftSkillNo,@Param("rightSkillNo")Integer rightSkillNo,@Param("layer") Integer layer);
+	List<Skill> queryAllSkill(@Param("leftSkillNo") Integer leftSkillNo,@Param("rightSkillNo")Integer rightSkillNo,@Param("layer") Integer layer, @Param("userId") Integer userId);
 	
 	/**
 	 * 根据技能名称查询
 	 * @param skillName
 	 * @return
 	 */
-	List<Skill> querySkillBySkillName(@Param("skillName") String skillName);
+	List<Skill> querySkillBySkillName(@Param("skillName") String skillName, @Param("userId") Integer userId);
 	
 	/**
 	 * 查询该层的所有技能
 	 * @param layer
 	 * @return
 	 */
-	List<Skill> querySkillsByLayer(Integer layer);
+	List<Skill> querySkillsByLayer(@Param("layer") Integer layer, @Param("userId")Integer userId);
 	
 	/**
 	 * 查询技能关联关系
 	 * @return
 	 */
-	QuerySkillLinkResultListDTO querySkillLink();
+	QuerySkillLinkResultListDTO querySkillLink(@Param("userId") Integer userId);
 	
 	/**
 	 * 插入技能

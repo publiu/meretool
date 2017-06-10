@@ -23,6 +23,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="page-content">
 		
 		<div class="content-block-title">${skill.skillName}-等级${skill.skillLevel }</div>
+		  <div class="content-block inset">
+		    <div class="content-block-inner">
+		      <p>技能名称全文：${skill.skillName }</p>
+		    </div>
+		  </div>
 		  <!-- Inset content block -->
 		  <div class="content-block inset">
 		    <div class="content-block-inner">

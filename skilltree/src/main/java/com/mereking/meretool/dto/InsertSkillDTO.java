@@ -14,12 +14,15 @@ public class InsertSkillDTO {
 	private String skillName;
 	private String skillDetail;
 	
+	private Integer userId;
+	
 	public InsertSkillDTO(){}
 	
-	public InsertSkillDTO(Integer parentSkillID, String skillName, String skillDetail){
+	public InsertSkillDTO(Integer parentSkillID, String skillName, String skillDetail, Integer userId){
 		this.parentSkillID = parentSkillID;
 		this.skillName = skillName;
 		this.skillDetail = skillDetail;
+		this.userId = userId;
 	}
 
 	
@@ -41,4 +44,13 @@ public class InsertSkillDTO {
 	public void setSkillDetail(String skillDetail) {
 		this.skillDetail = skillDetail;
 	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	
 }

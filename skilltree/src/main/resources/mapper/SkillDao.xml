@@ -16,13 +16,15 @@
 		<result property="skillLevel" column="skill_level"/>
 		<result property="leftSkillNo" column="left_skill_no" />
 		<result property="rightSkillNo" column="right_skill_no"/>
+		<result property="userId" column="user_id" />
 	</resultMap>
 	<!-- 目的：为dao接口方法提供sql语句配置 -->
 	<select id="getById" resultType="Skill" parameterType="int">
 		select 
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
-			ks.skill_detail as skillDetail, 
+			ks.skill_detail as skillDetail,
+			ks.user_id as userId, 
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -35,13 +37,14 @@
 		select 
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
-			ks.skill_detail as skillDetail, 
+			ks.skill_detail as skillDetail,
+			ks.user_id as userId,  
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
 			ksr.skill_level as skillLevel 
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
-		where ksr.left_skill_no >= #{leftSkillNo} and ksr.right_skill_no <= #{rightSkillNo} and ksr.layer <= #{layer}
+		where ksr.left_skill_no >= #{leftSkillNo} and ksr.right_skill_no <= #{rightSkillNo} and ksr.layer <= #{layer} and ks.user_id = #{userId}
 		order by ksr.left_skill_no;
 		]]>
 	</select>
@@ -51,11 +54,12 @@
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail, 
+			ks.user_id as userId, 
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
 			ksr.skill_level as skillLevel 
-		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id and ks.user_id = #{userId} 
 		where ksr.layer = #{layer}
 		order by ksr.left_skill_no;
 		]]>
@@ -66,12 +70,13 @@
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail, 
+			ks.user_id as userId, 
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
 			ksr.skill_level as skillLevel 
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
-		where ks.skill_name = #{skillName}
+		where ks.skill_name = #{skillName} and ks.user_id = #{userId}
 		order by ksr.left_skill_no;
 		]]>
 	</select>
@@ -101,6 +106,10 @@
 				kt_skill_relation ksr_child 
 				on 
 				((ksr_parent.left_skill_no < ksr_child.left_skill_no)and (ksr_parent.right_skill_no > ksr_child.right_skill_no) and ksr_parent.layer = ksr_child.layer-1)
+				LEFT JOIN
+				kt_skill ks
+				on ksr_child.skill_id = ks.skill_id
+				where ks.skill_id = #{userId}
 			)
 			link LEFT JOIN kt_skill ks_parent on ks_parent.skill_id=link.parent_skill_id LEFT JOIN kt_skill ks_child on ks_child.skill_id = link.child_skill_id where link.child_skill_id is not null;
 		]]>
@@ -108,8 +117,8 @@
 	<!-- 插入一个技能，默认参数类型：Skill，指定keyProperty查询后自动将ID赋值到对象中 -->
 	<insert id="insertSkill" useGeneratedKeys="true" keyProperty="skillID">
 		<![CDATA[
-			insert into kt_skill (skill_name, skill_detail, skill_create)
-						value(#{skillName}, #{skillDetail}, #{skillCreate});
+			insert into kt_skill (skill_name, skill_detail, skill_create, user_id)
+						value(#{skillName}, #{skillDetail}, #{skillCreate}, #{userId});
 		]]>
 	</insert>
 	<!-- 插入技能关联关系，默认参数类型：Skill -->

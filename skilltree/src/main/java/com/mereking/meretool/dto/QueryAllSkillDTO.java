@@ -5,6 +5,7 @@ public class QueryAllSkillDTO {
 	private String username;
 	private Integer skillID;
 	private Integer layerNum; // 搜索最深层次数
+	private Integer userId; // 用户Id
 	
 
 	public Integer getLayer() {
@@ -31,4 +32,11 @@ public class QueryAllSkillDTO {
 	public void setLayerNum(Integer layerNum) {
 		this.layerNum = layerNum;
 	}
+	public Integer getUserId() {
+		return userId;
+	}
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+	
 }
