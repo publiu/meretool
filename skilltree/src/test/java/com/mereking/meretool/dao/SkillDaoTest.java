@@ -29,7 +29,7 @@ public class SkillDaoTest extends BaseTest {
 	@Test
 	@Transactional
 	public void insertSkillAndUpdate() {
-		Skill skill = new Skill("测试技能插入", "测试技能插入-详情", new Date());
+		Skill skill = new Skill("测试技能插入", "测试技能插入-详情", new Date(), 1);
 		// 获取父技能
 		Skill parentSkill = skillDao.getById(1);
 		Integer rightSkillNo = parentSkill.getRightSkillNo();

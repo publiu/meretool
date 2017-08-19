@@ -190,11 +190,13 @@
 var spresult = id.split(" ");
 id = spresult[0]; 
 $$('#usernameID').val(id);*/
-if (checkLogin()) {
+if (!checkLogin()) {
 	login();
 } else {
 	init();
 }
+var content = "时间点列表:<br/>" + addDays(-15) + "<br/>" + addDays(-7) + "<br/>" + addDays(-4) + "<br/>" + addDays(-2) + "<br/>" + addDays(-1) + "<br/>";
+myApp.alert(content);
 // 校验是否登录
 function checkLogin() {
 	var result = false;
@@ -306,7 +308,20 @@ function querySkillsByLayer() {
 }
 
 
-
+//日期加上天数后的新日期. 
+function addDays(days) { 
+	var nd = new Date();   
+	nd = nd.valueOf();   
+	nd = nd + days * 24 * 60 * 60 * 1000;   
+	nd = new Date(nd);   //alert(nd.getFullYear() + "年" + (nd.getMonth() + 1) + "月" + nd.getDate() + "日"); 
+	var y = nd.getFullYear(); 
+	var m = nd.getMonth()+1; 
+	var d = nd.getDate(); 
+	if(m <= 9) m = "0"+m; 
+	if(d <= 9) d = "0"+d;  
+	var cdate = y+"年"+m+"月"+d+"日"; 
+	return cdate;
+}
 
 
 

@@ -73,9 +73,11 @@ public class WelcomeAction {
 		if (user != null) {
 			result.put("errorNo", 0);
 	        result.put("errorInfo", "已登录");
+		} else {
+	        result.put("errorNo", -1);
+	        result.put("errorInfo", "未登录");
 		}
-        result.put("errorNo", -1);
-        result.put("errorInfo", "未登录");
+
 		return result;
 	}
 
