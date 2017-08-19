@@ -110,7 +110,7 @@
             modalButtonCancel: 'Cancel',
             modalUsernamePlaceholder: 'Username',
             modalPasswordPlaceholder: 'Password',
-            modalTitle: 'Framework7',
+            modalTitle: '',
             modalCloseByOutside: false,
             actionsCloseByOutside: true,
             popupCloseByOutside: true,

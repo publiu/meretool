@@ -29,7 +29,12 @@
         height: 24px;
         background-image: url("data:image/svg+xml;charset=utf-8,<svg fill='#FFFFFF' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h24v24H0z' fill='none'/><path d='M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z'/></svg>");
       }
-
+i.icon.icon-plus {
+  width: 24px;
+  height: 24px;
+  font-size: 0;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20fill%3D'%23FFFFFF'%20height%3D'24'%20viewBox%3D'0%200%2024%2024'%20width%3D'24'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M19%2013h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'%2F%3E%3Cpath%20d%3D'M0%200h24v24H0z'%20fill%3D'none'%2F%3E%3C%2Fsvg%3E");
+}
 </style>
 <%@include file="../common/common.jsp" %>
 </head>
@@ -173,10 +178,39 @@
 						</div>
 					</div>
 				</div>	
-			</div>
 			
+			
+			
+			</div>
+			<a href="#" class="floating-button floating-button-to-popover open-popover color-purple" style="margin-right:30px">
+			    <i class="icon icon-plus" style="background-image:url('data:image/svg+xml;charset=utf-8,%3Csvg%20fill%3D'%23FFFFFF'%20height%3D'24'%20viewBox%3D'0%200%2024%2024'%20width%3D'24'%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%3E%3Cpath%20d%3D'M19%2013h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'%2F%3E%3Cpath%20d%3D'M0%200h24v24H0z'%20fill%3D'none'%2F%3E%3C%2Fsvg%3E')"></i>
+			</a>
+			<!-- Popover -->
+			<div class="popover demo-popover">
+			  <div class="popover-inner">
+			    <div class="list-block">
+			      <ul>
+			        <li>
+			          <a href="#" class="item-content item-link" onclick="timeAlert();$$('.demo-popover').hide()">
+			            <div class="item-inner">
+			              <div class="item-title">时间列表</div>
+			            </div>
+			          </a>
+			        </li>
+			        <li>
+			          <a href="#" class="item-content item-link" onclick="test();$$('.demo-popover').hide()">
+			            <div class="item-inner">
+			              <div class="item-title">题目</div>
+			            </div>
+			          </a>
+			        </li>
+			      </ul>
+			    </div>
+			  </div>
+			</div>
         </div>
-        
+
+			
       </div>
     </div>
     
@@ -195,8 +229,13 @@ if (!checkLogin()) {
 } else {
 	init();
 }
-var content = "时间点列表:<br/>" + addDays(-15) + "<br/>" + addDays(-7) + "<br/>" + addDays(-4) + "<br/>" + addDays(-2) + "<br/>" + addDays(-1) + "<br/>";
-myApp.alert(content);
+// 时间列表
+function timeAlert() {
+	// var content = "<br/>" + addDays(-15) + "<br/>" + addDays(-7) + "<br/>" + addDays(-4) + "<br/>" + addDays(-2) + "<br/>" + addDays(-1) + "<br/>" + addMinute(-12*60) + "<br/>" + addMinute(-30) + "<br/>" + addMinute(-5);
+	var content = "<br/>" + addMinute(-5) + "<br/>" + addMinute(-30) + "<br/>" + addMinute(-12*60) + "<br/>" + addDays(-1) + "<br/>" + addDays(-2) + "<br/>" + addDays(-4) + "<br/>" + addDays(-7) + "<br/>" + addDays(-15);
+	myApp.alert(content,"时间点列表");
+}
+
 // 校验是否登录
 function checkLogin() {
 	var result = false;
@@ -256,6 +295,55 @@ function login() {
     });
 }
 
+var length = 1;
+var testAllNo = 0;
+function GetRandomNum(Min,Max)
+{   
+	var Range = Max - Min;   
+	var Rand = Math.random();   
+	return (Min + Math.round(Rand * Range));   
+}  
+function test() {
+	var no1 = GetRandomNum(length,length*10-1);
+	var no2 = GetRandomNum(length,length*10-1);
+	var resultTest = 0;
+	var opNo = GetRandomNum(1,3);
+	var op = "";
+	if (opNo == 1) {
+		op = "+";
+		resultTest = no1 + no2;
+	}
+	else if (opNo == 2) {
+		op = "-";
+		resultTest = no1 - no2;
+	}
+	else if (opNo == 3) {
+		op = "X";
+		resultTest = no1 * no2;
+	}
+	
+	myApp.modalPassword('', '测试<br/>'+no1+"<br/>"+op+"<br/>"+no2, function (result) {
+		
+		var callback = function () {
+			if (testAllNo == 9) {
+				length = length*10;
+				testAllNo = 0;
+			} else {
+				testAllNo = testAllNo + 1;
+			}
+			
+			test();
+		}
+		if (result == resultTest) {
+			myApp.alert("回答正确",callback);
+		} else {
+			myApp.alert("回答错误",callback);
+		}
+		
+    },function () {
+		length = 1;
+	});
+}
 
 var defaultSkillID;
 function init() {
@@ -321,6 +409,19 @@ function addDays(days) {
 	if(d <= 9) d = "0"+d;  
 	var cdate = y+"年"+m+"月"+d+"日"; 
 	return cdate;
+}
+// 当前时分加上分钟数后的新时间
+function addMinute(minutes) { 
+	var nd = new Date();   
+	nd = nd.setMinutes(nd.getMinutes()+minutes);
+	nd = new Date(nd);
+	var hours = nd.getHours();
+	var minutess = nd.getMinutes();
+	if(hours <= 9) hours = "0" + hours;
+	if(minutess <= 9) minutess = "0" + minutess;
+	
+	var mdate = hours+"时"+minutess+"分"; 
+	return mdate;
 }
 
 

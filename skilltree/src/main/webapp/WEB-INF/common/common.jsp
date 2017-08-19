@@ -12,7 +12,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta name="apple-mobile-web-app-capable" content="yes">
 <!-- Color theme for statusbar -->
 <meta name="theme-color" content="#2196f3">
-
 <!-- Path to Framework7 Library CSS-->
 <link rel="stylesheet" href="../third-resources/framework7/css/framework7.ios.min.css">
 <link rel="stylesheet" href="../third-resources/framework7/css/framework7.ios.colors.min.css">
