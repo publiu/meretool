@@ -47,7 +47,7 @@ public class SkillAction {
 			user = userService.getByUsername("default");
 		}
 		
-		List<Skill> skillAlertAll = skillService.querySkillsByCreateTimeAndAlertType(AlertTypeEnum.MINUTE_5.getAlertTime(), AlertTypeEnum.MINUTE_5.getCode(), user.getId());
+		List<Skill> skillAlertAll = skillService.querySkillsByCreateTimeAndAlertType(AlertTypeEnum.MINUTE_5.getAlertTime(), AlertTypeEnum.FINISH.getCode(), user.getId());
 		List<List<Skill>> alertSkills = new ArrayList<>();
 		List<AlertTypeEnum> alertTypeEnums = AlertTypeEnum.getList();
 		for (AlertTypeEnum alertTypeEnum : alertTypeEnums) {
