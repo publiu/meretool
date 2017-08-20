@@ -1,6 +1,7 @@
 package com.mereking.meretool.action;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import com.mereking.meretool.dto.UpdateSkillDTO;
 import com.mereking.meretool.dto.UpdateUserDTO;
 import com.mereking.meretool.entity.Skill;
 import com.mereking.meretool.entity.User;
+import com.mereking.meretool.enums.AlertTypeEnum;
 import com.mereking.meretool.service.SkillService;
 import com.mereking.meretool.service.UserService;
 
@@ -36,13 +38,62 @@ public class SkillAction {
 	private SkillService skillService;
 	@Autowired
 	private UserService userService;
-	
-	@RequestMapping("/querySkillTree")
-	public String querySkillTree() {
-		return "skill/skill_tree";
+	// 备忘提醒------------------------------------------------------------
+	@RequestMapping("/queryAllSkillAlert")
+	public String queryAllSkillAlert(QueryAllSkillDTO queryAllSkillDTO, Model model, HttpServletRequest request) {
+		// 获取用户查询记录
+		User user = (User) request.getSession().getAttribute("user");
+		if (user == null) {
+			user = userService.getByUsername("default");
+		}
+		
+		List<Skill> skillAlertAll = skillService.querySkillsByCreateTimeAndAlertType(AlertTypeEnum.MINUTE_5.getAlertTime(), AlertTypeEnum.MINUTE_5.getCode(), user.getId());
+		List<List<Skill>> alertSkills = new ArrayList<>();
+		List<AlertTypeEnum> alertTypeEnums = AlertTypeEnum.getList();
+		for (AlertTypeEnum alertTypeEnum : alertTypeEnums) {
+			if (!AlertTypeEnum.FINISH.getCode().equals(alertTypeEnum.getCode())) {
+				List<Skill> tempSkills = new ArrayList<>();
+				for (Skill skill : skillAlertAll) {
+					Long time = skill.getSkillCreate().getTime() - alertTypeEnum.getAlertTime().getTime();
+					if (time < 0 && skill.getAlertType() < alertTypeEnum.getCode()) {
+						tempSkills.add(skill);
+					}
+				}
+				alertSkills.add(tempSkills);
+			}
+		}
+		model.addAttribute("alertTypeEnums", alertTypeEnums);
+		model.addAttribute("alertSkills", alertSkills);
+		model.addAttribute("username", user.getUsername());
+		return "skill/skill_alert_list";
 	}
 	
+	@RequestMapping("/updateSkillAlertType")
+	public String updateSkillAlertType(Integer skillID, Integer alertType, Model model) {
+		skillService.updateSkillAlertType(skillID, alertType);
+		return "redirect:queryAllSkillAlert";
+	}
 	
+	@RequestMapping("/insertAlertSkillPage")
+	public String gotoInsertAlertSkillPage(Integer parentSkillID, Model model, HttpServletRequest request) {
+		Skill skill = skillService.getBySkillID(parentSkillID);
+		model.addAttribute("skill", skill);
+		model.addAttribute("now",new Date());
+		return "skill/skill_alert_insert";
+	}
+	
+	@RequestMapping("/insertAlertSkill")
+	public String insertAlertSkill(InsertSkillDTO insertSkillDTO, HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute("user");
+		insertSkillDTO.setUserId(user.getId());
+		skillService.insertSkill(insertSkillDTO);
+		return "redirect:queryAllSkillAlert";
+	}
+	// 备忘提醒------------------------------------------------------------
+	
+	
+	
+	// 普通技能树------------------------------------------------------------
 	@RequestMapping("/queryAllSkill")
 	public String queryAllSkill(QueryAllSkillDTO queryAllSkillDTO, Model model, HttpServletRequest request) {
 		// 获取用户查询记录
@@ -110,6 +161,15 @@ public class SkillAction {
 		result.put("errorInfo", "");
 		result.put("querySkillsByLayerAjaxVOs", querySkillsByLayerAjaxVOs);
 		return result;
+	}
+	
+	// 普通技能树------------------------------------------------------------
+	
+	
+	
+	@RequestMapping("/querySkillTree")
+	public String querySkillTree() {
+		return "skill/skill_tree";
 	}
 	
 	@RequestMapping("/queryAllSkillAjax")

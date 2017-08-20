@@ -56,6 +56,9 @@ public class SkillServiceImpl implements SkillService {
 	@Override
 	public Skill insertSkill(InsertSkillDTO insertSkillDTO) {
 		Skill skill = new Skill(insertSkillDTO.getSkillName(), insertSkillDTO.getSkillDetail(), new Date(), insertSkillDTO.getUserId());
+		if (insertSkillDTO.getCreateTime() != null) {
+			skill.setSkillCreate(insertSkillDTO.getCreateTime());
+		}
 		Skill parentSkill = skillDao.getById(insertSkillDTO.getParentSkillID());
 		skill = insertSkill(skill, parentSkill);
 		
@@ -197,6 +200,19 @@ public class SkillServiceImpl implements SkillService {
 				insertSkillByXmlNode(skill, node);
 			}
 		}
+	}
+
+	@Override
+	public List<Skill> querySkillsByCreateTimeAndAlertType(Date time,
+			Integer alertType, Integer userId) {
+		return skillDao.querySkillsByCreateTimeAndAlertType(time, alertType, userId);
+	}
+
+	@Override
+	public Integer updateSkillAlertType(Integer skillID, Integer alertType) {
+		Skill skill = getBySkillID(skillID);
+		skill.setAlertType(alertType);
+		return skillDao.updateSkillAlertType(skill);
 	}
 
 	

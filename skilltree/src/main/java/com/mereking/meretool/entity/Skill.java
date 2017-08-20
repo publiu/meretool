@@ -19,7 +19,7 @@ public class Skill {
 	private Integer skillLevel; // 技能等级
 	private Integer layer; // 层次
 	private Integer userId; // 用户ID
-	
+	private Integer alertType; // 提示类型
 	public Skill() {		
 	}
 	
@@ -28,6 +28,7 @@ public class Skill {
 		this.skillDetail = skillDetail;
 		this.skillCreate = skillCreate;
 		this.userId = userId;
+		this.alertType = 0;// 默认提示类型
 	}
 	
 	public void initSkillRelation(Integer leftSkillNo, Integer rightSkillNo, Integer skillLevel, Integer layer) {
@@ -99,8 +100,13 @@ public class Skill {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	
-	
-	
+
+	public Integer getAlertType() {
+		return alertType;
+	}
+
+	public void setAlertType(Integer alertType) {
+		this.alertType = alertType;
+	}
 
 }

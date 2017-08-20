@@ -1,5 +1,6 @@
 package com.mereking.meretool.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -36,6 +37,12 @@ public interface SkillDao {
 	List<Skill> querySkillsByLayer(@Param("layer") Integer layer, @Param("userId")Integer userId);
 	
 	/**
+	 * 查询该时间提示类型的所有技能
+	 * @return
+	 */
+	List<Skill> querySkillsByCreateTimeAndAlertType(@Param("time") Date time, @Param("alertType") Integer alertType, @Param("userId") Integer userId);
+	
+	/**
 	 * 查询技能关联关系
 	 * @return
 	 */
@@ -68,6 +75,13 @@ public interface SkillDao {
 	 * @return
 	 */
 	Integer updateSkill(@Param("skill") Skill skill);
+	
+	/**
+	 * 更新技能提醒类型
+	 * @param skill
+	 * @return
+	 */
+	Integer updateSkillAlertType(@Param("skill") Skill skill);
 	
 	/**
 	 * 更新技能节点

@@ -48,7 +48,7 @@ i.icon.icon-plus {
        <div class="navbar">
          <div class="navbar-inner">
            <!-- We have home navbar without left link-->
-           <div class="center sliding">技能树</div>
+           <div class="center sliding">提示</div>
            <div class="right">
              <!-- Right link contains only icon - additional "icon-only" class--><a href="#" class="link icon-only open-panel" onclick="login()"> <i class="icon icon-bars"></i></a>
            </div>
@@ -61,121 +61,35 @@ i.icon.icon-plus {
 
 	            <!-- Scrollable page content -->
 	            <div class="page-content">
-				  <form action="queryAllSkill.action" method="post">
-				  	   <input type="hidden" name="username" id="usernameID"/>
-				  	   <input type="hidden" name="lastSkillID" id="lastSkillID" value="${lastSkillID}"/>
-					   <div class="list-block">
-						  <ul>
-						    <li>
-						      <!-- Smart select, will be opened in Picker with custom height -->
-						      <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
-						       <!-- select -->
-						        <select name="layer" id="layerID"  onchange="querySkillsByLayer()">
-						          <c:forEach var="no" begin="1" end="20">
-						          	<c:choose>
-						          		<c:when test="${no==lastSkillLayer}">
-						          			<option value="${no}" selected>${no}</option>
-						          		</c:when>
-						          		<c:otherwise>
-						          			<option value="${no}">${no}</option>
-						          		</c:otherwise>
-						          	
-						          	</c:choose>
-						          	
-								  </c:forEach>
-						          
-						        </select>
-						        <div class="item-content">
-						          <div class="item-inner">
-						            <!-- Select label -->
-						            <div class="item-title">层次</div>
-						            <!-- Selected value, not required -->
-						            <div class="item-after">${lastSkillLayer}</div>
-						          </div>
-						        </div>
-						      </a>
-						    </li>
-						    <li>
-						      <!-- Smart select, will be opened in Picker with custom height -->
-						      <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
-						       <!-- select -->
-						        <select name="skillID" id="skillID">
-						        </select>
-						        <div class="item-content">
-						          <div class="item-inner">
-						            <!-- Select label -->
-						            <div class="item-title">技能</div>
-						            <!-- Selected value, not required -->
-						            <div class="item-after" id="skillIDShow"></div>
-						          </div>
-						        </div>
-						      </a>
-						    </li>
-						    <li>
-						    <!-- Smart select, will be opened in Picker with custom height -->
-						    <a href="#" class="item-link smart-select" data-open-in="picker" data-picker-height="400px" data-picker-close-text="关闭">
-						       <!-- select -->
-						        <select name="layerNum">
-						        <c:forEach var="no" begin="1" end="20">
-						          <c:choose>
-					          		<c:when test="${no==lastSkillLayerNum}">
-					          			<option value="${no}" selected>${no}</option>
-					          		</c:when>
-					          		<c:otherwise>
-					          			<option value="${no}">${no}</option>
-					          		</c:otherwise>
-						          	
-						          </c:choose>
-						        </c:forEach>
-						        </select>
-						        <div class="item-content">
-						          <div class="item-inner">
-						            <!-- Select label -->
-						            <div class="item-title">深度</div>
-						            <!-- Selected value, not required -->
-						            <div class="item-after">${lastSkillLayerNum}</div>
-						          </div>
-						        </div>
-						      </a>
-						    </li>
-						    <li>
-						    </li>
-						  </ul>
-						</div>
-
-						<div class="content-block">
-					        <div class="row">
-					          <div class="col-100">
-					            <input type="submit" onclick="waiting()" value="提交" class="button button-big button-fill color-green"/>
-					          </div>
-					        </div>
-					    </div>
-					</form>
-	            	
-	            
 					<div class="list-block">
 						<div class="list-group">
+						<c:forEach var="alertTypeEnum" items="${alertTypeEnums}" varStatus="status">
 							<ul>
-							    <li class="list-group-title">技能树</li>
-								<c:forEach var="skill" items="${skills}">
-									<li class="item-content">
-								      <div class="item-media">
-									      <i class="icon icon-f7"></i>
-								      </div>
-								      <div class="item-inner">
-								        <div class="item-title">
-								        	<a href="getSkillBySkillID.action?skillID=${skill.skillID}">
-								        	<c:forEach var="no" begin="1" end="${skill.layer-lastSkillLayer}">　</c:forEach>
-								        	${skill.skillName}</a>
-								        </div>
-								        <c:if test="${(skill.rightSkillNo-skill.leftSkillNo)<=1}">
-								        <div class="item-after"><span class="badge">${skill.skillLevel }</span></div>
-								        </c:if>
-								      </div>
-								    </li>
+							    <li class="list-group-title">${alertTypeEnum.describe}</li>
+								<c:forEach var="alertSkillList" items="${alertSkills}" varStatus="alertStatus">
+									<c:if test="${status.index == alertStatus.index}">
+										<c:forEach var="skill" items="${alertSkillList}" varStatus="alertStatus">
+										
+											<li class="item-content">
+										      <div class="item-media">
+											      <i class="icon icon-f7"></i>
+										      </div>
+										      <div class="item-inner">
+										        <div class="item-title">
+										        	<a href="getSkillBySkillID.action?skillID=${skill.skillID}">
+										        	${skill.skillName}</a>
+										        </div>
+										        
+										        <div class="item-after"><a href="updateSkillAlertType.action?skillID=${skill.skillID}&alertType=${skill.alertType+1}">
+										        	。、。</a></div>
+
+										      </div>
+										    </li>
+									    </c:forEach>
+									 </c:if>
 								</c:forEach>
-						  	</ul>	
-						  	
+						  	</ul>
+						 </c:forEach> 		
 						</div>
 					</div>
 				</div>	
@@ -195,6 +109,13 @@ i.icon.icon-plus {
 			          <a href="#" class="item-content item-link" onclick="timeAlert();$$('.demo-popover').hide()">
 			            <div class="item-inner">
 			              <div class="item-title">时间列表</div>
+			            </div>
+			          </a>
+			        </li>
+			        <li>
+			          <a href="#" class="item-content item-link" onclick="addAlert();$$('.demo-popover').hide()">
+			            <div class="item-inner">
+			              <div class="item-title">添加内容</div>
 			            </div>
 			          </a>
 			        </li>
@@ -227,9 +148,11 @@ id = spresult[0];
 $$('#usernameID').val(id);*/
 if (!checkLogin()) {
 	login();
-} else {
-	init();
 }
+function addAlert() {
+	mainView.router.loadPage("./insertAlertSkillPage.action?parentSkillID=1");
+}
+
 // 时间列表
 function timeAlert() {
 	// var content = "<br/>" + addDays(-15) + "<br/>" + addDays(-7) + "<br/>" + addDays(-4) + "<br/>" + addDays(-2) + "<br/>" + addDays(-1) + "<br/>" + addMinute(-12*60) + "<br/>" + addMinute(-30) + "<br/>" + addMinute(-5);
@@ -346,55 +269,6 @@ function test() {
 	});
 }
 
-var defaultSkillID;
-function init() {
-	defaultSkillID=$$("#lastSkillID").val();
-	// 加载后运行一次
-	querySkillsByLayer();
-}
-
-
-function querySkillsByLayer() {
-	var layer = $$('#layerID').val();
-	myApp.showPreloader("正在查找第"+layer+"层技能");
-	$$.ajax({
-		url : 'querySkillsByLayer.do?rnd=' + new Date().getTime(),
-		type : 'POST',
-		data : {
-			'layer' : layer
-		},
-		success : function(data) {
-			data = JSON.parse(data);
-			myApp.hidePreloader();
-			if (data.errorNo == 0) {
-				if (data.querySkillsByLayerAjaxVOs == null || data.querySkillsByLayerAjaxVOs.length < 1) {
-					myApp.alert("第"+layer+"层无技能","提示");
-				} else {
-					$$('#skillID').html("");
-					var isSelected = false;
-					for(var i=0; i<data.querySkillsByLayerAjaxVOs.length; i++) {
-						var skill = data.querySkillsByLayerAjaxVOs[i];
-						if (skill.skillID == defaultSkillID) {
-							$$('#skillID').append('<option value="'+skill.skillID+'" selected>'+skill.skillName+'</option>');
-							$$('#skillIDShow').html(skill.skillName);
-							isSelected = true;
-						} else {
-							$$('#skillID').append('<option id="skillOption'+i+'" value="'+skill.skillID+'">'+skill.skillName+'</option>');
-						}
-					}
-					if(!isSelected) {
-						$$('#skillOption0').attr('selected', true);
-						$$('#skillIDShow').html($$('#skillOption0').html());
-					}
-				}
-				
-
-			} else {
-				myApp.alert("提示",data.errorInfo);
-			}
-		}
-	});
-}
 
 
 //日期加上天数后的新日期. 
@@ -427,79 +301,5 @@ function addMinute(minutes) {
 
 
 
-
-
-var svg = d3.select("svg"),
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
-
-var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) { return d.id; }))
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2));
-
-d3.json("queryAllSkillAjax.action", function(error, graph) {
-  if (error) throw error;
-
-  var link = svg.append("g")
-      .attr("class", "links")
-    .selectAll("line")
-    .data(graph.links)
-    .enter().append("line")
-      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
-
-  var node = svg.append("g")
-      .attr("class", "nodes")
-    .selectAll("circle")
-    .data(graph.nodes)
-    .enter().append("circle")
-      .attr("r", 5)
-      .attr("fill", function(d) { return color(d.group); })
-      .call(d3.drag()
-          .on("start", dragstarted)
-          .on("drag", dragged)
-          .on("end", dragended));
-
-  node.append("title")
-      .text(function(d) { return d.title; });
-
-  simulation
-      .nodes(graph.nodes)
-      .on("tick", ticked);
-
-  simulation.force("link")
-      .links(graph.links);
-
-  function ticked() {
-    link
-        .attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-    node
-        .attr("cx", function(d) { return d.x; })
-        .attr("cy", function(d) { return d.y; });
-  }
-});
-
-function dragstarted(d) {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged(d) {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended(d) {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
 
 </script>

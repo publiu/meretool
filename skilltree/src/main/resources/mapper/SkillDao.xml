@@ -17,6 +17,7 @@
 		<result property="leftSkillNo" column="left_skill_no" />
 		<result property="rightSkillNo" column="right_skill_no"/>
 		<result property="userId" column="user_id" />
+		<result property="alertType" column="alert_type" />
 	</resultMap>
 	<!-- 目的：为dao接口方法提供sql语句配置 -->
 	<select id="getById" resultType="Skill" parameterType="int">
@@ -25,10 +26,11 @@
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail,
 			ks.user_id as userId, 
+			ks.alert_type as alertType,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
-			ksr.skill_level as skillLevel 
+			ksr.skill_level as skillLevel
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
 		where ks.skill_id = #{skillID};
 	</select>
@@ -38,7 +40,8 @@
 			ks.skill_id as skillID, 
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail,
-			ks.user_id as userId,  
+			ks.user_id as userId,
+			ks.alert_type as alertType,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -55,6 +58,7 @@
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail, 
 			ks.user_id as userId, 
+			ks.alert_type as alertType,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -71,6 +75,7 @@
 			ks.skill_name as skillName, 
 			ks.skill_detail as skillDetail, 
 			ks.user_id as userId, 
+			ks.alert_type as alertType,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -78,6 +83,25 @@
 		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id 
 		where ks.skill_name = #{skillName} and ks.user_id = #{userId}
 		order by ksr.left_skill_no;
+		]]>
+	</select>
+	
+	<select id="querySkillsByCreateTimeAndAlertType" resultType="Skill">
+		<![CDATA[ 
+		select 
+			ks.skill_id as skillID, 
+			ks.skill_name as skillName, 
+			ks.skill_detail as skillDetail, 
+			ks.user_id as userId, 
+			ks.skill_create as skillCreate, 
+			ks.alert_type as alertType,
+			ksr.layer as layer, 
+			ksr.left_skill_no as leftSkillNo, 
+			ksr.right_skill_no as rightSkillNo, 
+			ksr.skill_level as skillLevel 
+		from kt_skill ks LEFT JOIN kt_skill_relation ksr on ks.skill_id = ksr.skill_id and ks.user_id = #{userId} 
+		where ks.skill_create < #{time} and ks.alert_type < #{alertType} and ks.user_id = #{userId}
+		order by ks.skill_create desc;
 		]]>
 	</select>
 	<!-- querySkillLink查询所有关联关系结果映射 -->
@@ -117,8 +141,8 @@
 	<!-- 插入一个技能，默认参数类型：Skill，指定keyProperty查询后自动将ID赋值到对象中 -->
 	<insert id="insertSkill" useGeneratedKeys="true" keyProperty="skillID">
 		<![CDATA[
-			insert into kt_skill (skill_name, skill_detail, skill_create, user_id)
-						value(#{skillName}, #{skillDetail}, #{skillCreate}, #{userId});
+			insert into kt_skill (skill_name, skill_detail, skill_create, user_id, alert_type)
+						value(#{skillName}, #{skillDetail}, #{skillCreate}, #{userId}, #{alertType});
 		]]>
 	</insert>
 	<!-- 插入技能关联关系，默认参数类型：Skill -->
@@ -162,6 +186,11 @@
 	<update id="updateSkill" parameterType="Skill">
 		<![CDATA[
 			update kt_skill set skill_name=#{skill.skillName}, skill_detail=#{skill.skillDetail} where skill_id = #{skill.skillID}
+		]]>
+	</update>
+	<update id="updateSkillAlertType" parameterType="Skill">
+		<![CDATA[
+			update kt_skill set alert_type=#{skill.alertType} where skill_id = #{skill.skillID}
 		]]>
 	</update>
 </mapper>

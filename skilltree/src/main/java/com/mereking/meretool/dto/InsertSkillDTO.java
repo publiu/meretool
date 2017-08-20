@@ -13,7 +13,7 @@ public class InsertSkillDTO {
 	
 	private String skillName;
 	private String skillDetail;
-	
+	private Date createTime;
 	private Integer userId;
 	
 	public InsertSkillDTO(){}
@@ -51,6 +51,14 @@ public class InsertSkillDTO {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 	
 }
