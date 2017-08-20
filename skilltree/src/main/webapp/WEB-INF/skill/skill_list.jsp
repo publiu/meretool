@@ -335,9 +335,9 @@ function test() {
 			test();
 		}
 		if (result == resultTest) {
-			myApp.alert("回答正确",callback);
+			myApp.alert("回答正确","",callback);
 		} else {
-			myApp.alert("回答错误",callback);
+			myApp.alert("回答错误","",callback);
 		}
 		
     },function () {
