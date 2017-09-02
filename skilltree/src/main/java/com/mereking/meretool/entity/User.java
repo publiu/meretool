@@ -10,6 +10,7 @@ public class User {
 	private Integer lastSkillLayer; // 最近搜索的技能层次
 	private Integer lastSkillID; // 最近搜索的技能id
 	private Integer lastSkillLayerNum; // 最近搜索的技能深度
+	private String email;//邮箱
 	public Integer getId() {
 		return id;
 	}
@@ -40,6 +41,10 @@ public class User {
 	public void setLastSkillLayerNum(Integer lastSkillLayerNum) {
 		this.lastSkillLayerNum = lastSkillLayerNum;
 	}
-	
-
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 }

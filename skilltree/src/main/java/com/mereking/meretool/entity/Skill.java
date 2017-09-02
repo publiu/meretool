@@ -20,6 +20,7 @@ public class Skill {
 	private Integer layer; // 层次
 	private Integer userId; // 用户ID
 	private Integer alertType; // 提示类型
+	private Integer isAlert=0; // 是否已提示 1.已提示 0.未提示
 	public Skill() {		
 	}
 	
@@ -108,5 +109,14 @@ public class Skill {
 	public void setAlertType(Integer alertType) {
 		this.alertType = alertType;
 	}
+
+	public Integer getIsAlert() {
+		return isAlert;
+	}
+
+	public void setIsAlert(Integer isAlert) {
+		this.isAlert = isAlert;
+	}
+	
 
 }

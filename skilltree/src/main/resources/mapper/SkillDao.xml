@@ -18,6 +18,7 @@
 		<result property="rightSkillNo" column="right_skill_no"/>
 		<result property="userId" column="user_id" />
 		<result property="alertType" column="alert_type" />
+		<result property="isAlert" column="is_alert" />
 	</resultMap>
 	<!-- 目的：为dao接口方法提供sql语句配置 -->
 	<select id="getById" resultType="Skill" parameterType="int">
@@ -27,6 +28,7 @@
 			ks.skill_detail as skillDetail,
 			ks.user_id as userId, 
 			ks.alert_type as alertType,
+			ks.is_alert as isAlert,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -42,6 +44,7 @@
 			ks.skill_detail as skillDetail,
 			ks.user_id as userId,
 			ks.alert_type as alertType,
+			ks.is_alert as isAlert,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -59,6 +62,7 @@
 			ks.skill_detail as skillDetail, 
 			ks.user_id as userId, 
 			ks.alert_type as alertType,
+			ks.is_alert as isAlert,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -76,6 +80,7 @@
 			ks.skill_detail as skillDetail, 
 			ks.user_id as userId, 
 			ks.alert_type as alertType,
+			ks.is_alert as isAlert,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -95,6 +100,7 @@
 			ks.user_id as userId, 
 			ks.skill_create as skillCreate, 
 			ks.alert_type as alertType,
+			ks.is_alert as isAlert,
 			ksr.layer as layer, 
 			ksr.left_skill_no as leftSkillNo, 
 			ksr.right_skill_no as rightSkillNo, 
@@ -190,7 +196,12 @@
 	</update>
 	<update id="updateSkillAlertType" parameterType="Skill">
 		<![CDATA[
-			update kt_skill set alert_type=#{skill.alertType} where skill_id = #{skill.skillID}
+			update kt_skill set alert_type=#{skill.alertType},is_alert=1 where skill_id = #{skill.skillID}
+		]]>
+	</update>
+		<update id="updateSkillIsAlert" parameterType="Skill">
+		<![CDATA[
+			update kt_skill set is_alert=1 where skill_id = #{skill.skillID}
 		]]>
 	</update>
 </mapper>

@@ -99,4 +99,10 @@ public interface SkillService {
 	 */
 	public Map<String, Object> importXmindFile(Integer userId, MultipartFile file ,HttpServletRequest request);
 
+	/**
+	 * 更新技能是否提醒类型
+	 * @param skill
+	 * @return
+	 */
+	Integer updateSkillIsAlert(Skill skill);
 }

@@ -84,6 +84,13 @@ public interface SkillDao {
 	Integer updateSkillAlertType(@Param("skill") Skill skill);
 	
 	/**
+	 * 更新技能是否提醒类型
+	 * @param skill
+	 * @return
+	 */
+	Integer updateSkillIsAlert(@Param("skill") Skill skill);
+	
+	/**
 	 * 更新技能节点
 	 * @param leftSkillNo 技能左值
 	 * @param rightSkillNo 技能右值
@@ -111,4 +118,6 @@ public interface SkillDao {
 	 * @return
 	 */
 	Integer updateDecreaseSkillLevel(Integer skillID);
+	
+	
 }

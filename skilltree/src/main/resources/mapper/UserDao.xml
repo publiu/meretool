@@ -11,6 +11,7 @@
 		<result property="lastSkillLayer" column="last_skill_layer"/>
 		<result property="lastSkillID" column="last_skill_id"/>
 		<result property="lastSkillLayerNum" column="last_skill_layer_num"/>
+		<result property="email" column="email" />
 	</resultMap>
 	<!-- 目的：为dao接口方法提供sql语句配置 -->
 	<select id="getByUsername" resultMap="user" parameterType="string">

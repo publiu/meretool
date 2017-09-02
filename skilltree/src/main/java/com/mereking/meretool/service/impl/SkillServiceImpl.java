@@ -215,6 +215,11 @@ public class SkillServiceImpl implements SkillService {
 		return skillDao.updateSkillAlertType(skill);
 	}
 
+	@Override
+	public Integer updateSkillIsAlert(Skill skill) {
+		return skillDao.updateSkillIsAlert(skill);
+	}
+
 	
 	
 	
