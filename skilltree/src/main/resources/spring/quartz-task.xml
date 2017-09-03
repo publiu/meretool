@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+	default-lazy-init="false">
+	
+	<bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"> 
+		<property name="corePoolSize" value="10" /> 
+		<property name="maxPoolSize" value="100" /> 
+		<property name="queueCapacity" value="500" />
+	</bean>
+	<!--每日任务(内容相关) -->
+	<bean id="jobTrigger" class="com.mereking.meretool.task.JobTrigger"></bean>
+	<bean id="contenJobTrigger" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="jobTrigger" />
+		<property name="targetMethod" value="execute" />
+	</bean>
+	<bean id="contentJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="contenJobTrigger" />
+		<property name="cronExpression" value="0 0/1 * * * ?" />
+	</bean>
+
+	<!-- 调度器 -->
+    <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> 
+       <!-- 通过applicationContextSchedulerContextKey属性配置spring上下文 -->    
+        <property name="applicationContextSchedulerContextKey">    
+            <value>applicationContext</value>    
+        </property>   
+        <property name="triggers">  
+			<list>   
+				<ref bean="contentJobTrigger" /> 
+			</list> 
+		</property> 
+    	<property name="taskExecutor" ref="executor" /> 
+   	</bean> 
+   	
+   	
+   	
+   	
+	<!-- spring的 调度器 -->
+    <!-- <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> 
+       通过applicationContextSchedulerContextKey属性配置spring上下文    
+        <property name="applicationContextSchedulerContextKey">    
+            <value>applicationContext</value>    
+        </property>   
+    </bean> 
+    
+      加载代理时效检测任务
+    <bean name="customerTime" class="org.springframework.scheduling.quartz.JobDetailBean" >
+    	<property name="jobClass" value="com.mereking.meretool.task.HandleSynchronousTask" />
+    	<property name="jobDataAsMap">
+    		<map>
+    			<entry key="timeout" value="0" />
+    		</map>
+    	</property>
+    </bean>
+    配饰任务调度
+    <bean id="cronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="customerTime" />
+    	<property name="cronExpression">
+    		<value>1 * * * * ?</value>
+    		每日凌晨1点进行调度 
+    		格式: [秒] [分] [小时] [日] [月] [周] [年]
+    	</property>
+    </bean>
+
+    配置调度工厂
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    	加载自定义工厂
+    	<property name="jobFactory">
+    		<bean class="com.mereking.meretool.task.SpringBeanJobFactory"></bean>
+    	</property>
+    	<property name="triggers">
+    		<list>
+    			<ref bean = "cronTriggerBean"/>
+    		</list>
+    	</property>
+    </bean> -->
+</beans>
