@@ -2,6 +2,7 @@ package com.mereking.meretool.action;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +90,8 @@ public class SkillAction {
 		skillService.insertSkill(insertSkillDTO);
 		return "redirect:queryAllSkillAlert";
 	}
+	
+
 	// 备忘提醒------------------------------------------------------------
 	
 	

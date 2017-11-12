@@ -196,12 +196,12 @@
 	</update>
 	<update id="updateSkillAlertType" parameterType="Skill">
 		<![CDATA[
-			update kt_skill set alert_type=#{skill.alertType},is_alert=1 where skill_id = #{skill.skillID}
+			update kt_skill set alert_type=#{skill.alertType},is_alert=0 where skill_id = #{skill.skillID}
 		]]>
 	</update>
 		<update id="updateSkillIsAlert" parameterType="Skill">
 		<![CDATA[
-			update kt_skill set is_alert=1 where skill_id = #{skill.skillID}
+			update kt_skill set is_alert=#{skill.isAlert} where skill_id = #{skill.skillID}
 		]]>
 	</update>
 </mapper>
