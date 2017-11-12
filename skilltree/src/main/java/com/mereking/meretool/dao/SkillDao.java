@@ -10,7 +10,7 @@ import com.mereking.meretool.entity.Skill;
 
 public interface SkillDao {
 	/**
-	 * 查询技能
+	 * 查询技能 测试
 	 * @param skillId 技能ID
 	 * @return
 	 */
